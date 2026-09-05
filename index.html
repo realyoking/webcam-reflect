@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Mirror Button Vibe</title>
+    <style>
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: system-ui, -apple-system, sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Hidden video element streaming the webcam */
+        #webcam {
+            display: none;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* The glass pill button reflecting the webcam */
+        .webcam-button {
+            position: relative;
+            padding: 20px 60px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .webcam-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Live video mirrored inside the button */
+        .webcam-button video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror effect */
+            z-index: 1;
+            opacity: 0.85;
+            mix-blend-mode: luminosity; /* Gives that metallic/reflective vibe */
+        }
+
+        /* Glossy overlay sheen */
+        .webcam-button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .button-text {
+            position: relative;
+            z-index: 3;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            mix-blend-mode: difference;
+        }
+
+        /* Alternative: Webcam inside text style */
+        .webcam-text-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .webcam-heading {
+            font-size: 80px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0;
+            color: #fff;
+            position: relative;
+        }
+
+        /* Clips the webcam feed inside the text shapes */
+        .webcam-heading span {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .webcam-heading video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            mix-blend-mode: screen;
+        }
+
+        .aura-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hidden native video element -->
+    <video id="webcam" autoplay playsinline muted></video>
+
+    <div class="container">
+        <!-- Style 1: The Pill Button with Webcam Reflection -->
+        <button class="webcam-button" id="mirrorBtn">
+            <video class="live-cam" autoplay playsinline muted></video>
+            <span class="button-text">Button</span>
+        </button>
+
+        <!-- Style 2: Big Text filled with Webcam Feed -->
+        <div class="webcam-text-container">
+            <h1 class="webcam-heading">
+                Underworld
+                <video class="live-cam" autoplay playsinline muted></video>
+            </h1>
+        </div>
+
+        <div class="aura-tag">
+            <!-- SVG Icon instead of emoji -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <span>Aura T Gang Locked In</span>
+        </div>
+    </div>
+
+    <script>
+        // Hook up the user webcam and stream it to all elements with class 'live-cam'
+        async function initWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                const videoElements = document.querySelectorAll('.live-cam');
+                
+                videoElements.forEach(video => {
+                    video.srcObject = stream;
+                });
+            } catch (err) {
+                console.error("Camera access denied or unavailable:", err);
+            }
+        }
+
+        initWebcam();
+    </script>
+</body>
+</html>
